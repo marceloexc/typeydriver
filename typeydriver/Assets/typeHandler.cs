@@ -36,7 +36,7 @@ public class typeHandler : MonoBehaviour
     {
         bool isInCar = followTargetScript != null && followTargetScript.target != null;
 
-        // Handle panel hide toggle
+        // handle panel hide toggle
         if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMinus))
         {
             isPanelHidden = !isPanelHidden;
@@ -44,12 +44,7 @@ public class typeHandler : MonoBehaviour
 
         bool shouldShowPanel = isInCar && !isPanelHidden;
 
-        if (panel != null)
-        {
-            panel.SetActive(shouldShowPanel);
-        }
-
-        // Disable car movement and camera swing when panel is active
+        // disable car movement and camera swing when panel is active
         if (carController != null)
         {
             carController.canMove = !shouldShowPanel;
