@@ -29,12 +29,12 @@ public class followTarget : MonoBehaviour
         transform.rotation = target.rotation; 
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && active)
+        if (Input.GetKeyDown(KeyCode.Period) && active)
         {
             target = null;
             Debug.Log("dismount");
         }
-        else if (Input.GetKeyDown(KeyCode.Space) && !active)
+        else if (Input.GetKeyDown(KeyCode.Period) && !active)
         {
             target = temptarget;
             Debug.Log("giddyup");
