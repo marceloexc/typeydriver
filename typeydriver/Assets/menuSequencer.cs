@@ -7,6 +7,7 @@ public class menuSequencer : MonoBehaviour
     public GameObject menuUIRoot;
     public CanvasGroup menuCanvasGroup;
 
+
     [Header("Cameras")]
     public Camera menuCamera;
     public GameObject gameplayCameraRoot;
@@ -15,9 +16,7 @@ public class menuSequencer : MonoBehaviour
     public float fadeDuration = 1f;
     public float cameraMoveDuration = 1f;
 
-    [Header("Gameplay")]
     public SimpleRigidbodyCar carController;
-
     private bool isStarting;
     private Camera gameplayCamera;
 
@@ -70,7 +69,7 @@ public class menuSequencer : MonoBehaviour
         float elapsed = 0f;
         float fadeTime = Mathf.Max(0.01f, fadeDuration);
 
-        // Fade out the menu before moving the camera.
+        // fade out menu before moving camera
         while (elapsed < fadeTime)
         {
             elapsed += Time.deltaTime;
@@ -122,4 +121,9 @@ public class menuSequencer : MonoBehaviour
             gameplayCamera.tag = "MainCamera";
         }
     }
+
+    // IEnumerator showHud()
+    // {
+    //     //put code for showing carUI here
+    // }
 }

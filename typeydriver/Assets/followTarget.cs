@@ -6,6 +6,8 @@ public class followTarget : MonoBehaviour
 {
     public Transform target;
     private Transform temptarget;
+    public GameObject tpsUI;
+    public GameObject repairSystem;
 
     void Start()
     {
@@ -33,11 +35,14 @@ public class followTarget : MonoBehaviour
         {
             target = null;
             Debug.Log("dismount");
+            tpsUI.SetActive(true);
+            repairSystem.SetActive(false);
         }
         else if (Input.GetKeyDown(KeyCode.Period) && !active)
         {
             target = temptarget;
             Debug.Log("giddyup");
+            tpsUI.SetActive(false);
         }
     }
 

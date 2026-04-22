@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using System;
+using Random = UnityEngine.Random;
+
 
 public class typeHandler : MonoBehaviour
 {
@@ -11,12 +14,12 @@ public class typeHandler : MonoBehaviour
     public followTarget followTargetScript;
     public SimpleRigidbodyCar carController;
     public cameraBehavior cameraBehavior;
+    public gunHandler gunHandlerScript;
 
     bool isDamaged = false;
-    bool isPanelHidden = true;
     string inputString = string.Empty;
     string targetWord = string.Empty;
-    string shotType = string.Empty;
+    string shotType = "pistol";
 
     string[] wordBank = new string[] { "door", "trunk", "fender", "window", "tire", "hood", "mirror", "grill" };
     string[] shotBank = new string[] { "pistol", "scatter", "gatling", "rocket", "beam" };
@@ -36,16 +39,17 @@ public class typeHandler : MonoBehaviour
     {
         bool isInCar = followTargetScript != null && followTargetScript.target != null;
 
+
         // handle panel hide toggle
-        if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMinus))
-        {
-            Debug.Log("togle");
-            isPanelHidden = !isPanelHidden;
-            panel.SetActive(!isPanelHidden);
-            Debug.Log("isPanelHidden: " + isPanelHidden);
+        if (isInCar){
+            if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMinus))
+            {
+                Debug.Log("togle");
+                panel.SetActive(!panel.activeSelf);
+            }
         }
 
-        bool shouldShowPanel = isInCar && !isPanelHidden;
+        bool shouldShowPanel = isInCar && panel.activeSelf;
         Debug.Log("isInCar: " + isInCar);
 
         // disable car movement and camera swing when panel is active
@@ -59,7 +63,7 @@ public class typeHandler : MonoBehaviour
             cameraBehavior.canSwing = !shouldShowPanel;
         }
 
-        if (!isInCar || isPanelHidden)
+        if (!isInCar || !panel.activeSelf)
         {
             return;
         }
@@ -192,6 +196,8 @@ public class typeHandler : MonoBehaviour
         if (!string.IsNullOrEmpty(matchedShotType))
         {
             shotType = matchedShotType;
+            GunType currentShotType = (GunType)Enum.Parse(typeof(GunType), shotType);
+            gunHandlerScript.currentGun = currentShotType;
             Debug.Log("Shot type set to " + shotType);
             ClearInputAndShotType();
             return;
