@@ -31,6 +31,7 @@ public class cameraBehavior : MonoBehaviour
     private float currentLookahead = 0f;
     private float thirdPersonCameraY = 0f;  // Vertical angle around character
     private float thirdPersonCameraX = 0f;  // Horizontal angle around character
+    private Quaternion targetHeadRotation = Quaternion.identity;  // Target rotation for head bone
     public Rigidbody carRigidbody;
     public followTarget followTargetScript;
     public GameObject currentGameObject;
@@ -54,6 +55,7 @@ public class cameraBehavior : MonoBehaviour
             HandleThirdPersonCamera();
         }
     }
+
 
     void HandleCarCamera()
     {
@@ -111,12 +113,18 @@ public class cameraBehavior : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(new Vector3(cameraForward.x, 0f, cameraForward.z).normalized);
             character.transform.rotation = Quaternion.Lerp(character.transform.rotation, targetRotation, Time.deltaTime * characterLookSmoothSpeed);
         }
+
+      if (handIKTarget != null)
+        {
+            handIKTarget.position = transform.position + transform.forward * aimDistance;
+            handIKTarget.rotation = Quaternion.LookRotation(transform.forward)* Quaternion.Euler(0f, -90f, -90f);;
+        }
     
     }
 
     float GetSteeringValue()
     {
-        // what do you think this does nigga
+        // what do you think this does
         float input = Input.GetAxisRaw("Horizontal");
         return input;
     }

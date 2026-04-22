@@ -13,7 +13,7 @@ public class typeHandler : MonoBehaviour
     public cameraBehavior cameraBehavior;
 
     bool isDamaged = false;
-    bool isPanelHidden = false;
+    bool isPanelHidden = true;
     string inputString = string.Empty;
     string targetWord = string.Empty;
     string shotType = string.Empty;
@@ -39,10 +39,14 @@ public class typeHandler : MonoBehaviour
         // handle panel hide toggle
         if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMinus))
         {
+            Debug.Log("togle");
             isPanelHidden = !isPanelHidden;
+            panel.SetActive(!isPanelHidden);
+            Debug.Log("isPanelHidden: " + isPanelHidden);
         }
 
         bool shouldShowPanel = isInCar && !isPanelHidden;
+        Debug.Log("isInCar: " + isInCar);
 
         // disable car movement and camera swing when panel is active
         if (carController != null)

@@ -173,8 +173,18 @@ void Dash()
 void UpdateFallAnimation()
 {
     // Set fall animation to true if airborne, false if grounded
-    bool shouldFall = !isGrounded && !isDashing;
-    anim.SetBool("Fall", shouldFall);
+    if (!isGrounded)
+    {
+        if (!isDashing)
+        {
+        anim.SetBool("Fall", true);
+        return;
+        }
+    }
+    else
+    {
+        anim.SetBool("Fall", false);
+    }
 }
 
 void IsGrounded()
