@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using System;
+using Random = UnityEngine.Random;
+
 
 public class typeHandler : MonoBehaviour
 {
@@ -11,17 +14,20 @@ public class typeHandler : MonoBehaviour
     public followTarget followTargetScript;
     public SimpleRigidbodyCar carController;
     public cameraBehavior cameraBehavior;
+    public gunHandler gunHandlerScript;
+    public TMP_Text inNoticeText;
+    public GameObject inNotice;
 
     bool isDamaged = false;
-    bool isPanelHidden = false;
     string inputString = string.Empty;
     string targetWord = string.Empty;
-    string shotType = string.Empty;
+    string shotType = "pistol";
 
     string[] wordBank = new string[] { "door", "trunk", "fender", "window", "tire", "hood", "mirror", "grill" };
     string[] shotBank = new string[] { "pistol", "scatter", "gatling", "rocket", "beam" };
     string[] letters = new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
     int[] quantities = new int[] { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
+    public TMP_Text[] quantityTexts = new TMP_Text[26];
 
     Dictionary<char, int> letterIndexMap;
 
@@ -30,26 +36,27 @@ public class typeHandler : MonoBehaviour
         InitializeLetterIndexMap();
         UpdateInputDisplay();
         UpdateTargetWordDisplay();
+        UpdateQuantityUI();
     }
 
     void Update()
     {
         bool isInCar = followTargetScript != null && followTargetScript.target != null;
 
-        // Handle panel hide toggle
-        if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMinus))
-        {
-            isPanelHidden = !isPanelHidden;
+
+        // handle panel hide toggle
+        if (isInCar){
+            if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMinus))
+            {
+                Debug.Log("togle");
+                panel.SetActive(!panel.activeSelf);
+            }
         }
 
-        bool shouldShowPanel = isInCar && !isPanelHidden;
+        bool shouldShowPanel = isInCar && panel.activeSelf;
+        Debug.Log("isInCar: " + isInCar);
 
-        if (panel != null)
-        {
-            panel.SetActive(shouldShowPanel);
-        }
-
-        // Disable car movement and camera swing when panel is active
+        // disable car movement and camera swing when panel is active
         if (carController != null)
         {
             carController.canMove = !shouldShowPanel;
@@ -60,7 +67,7 @@ public class typeHandler : MonoBehaviour
             cameraBehavior.canSwing = !shouldShowPanel;
         }
 
-        if (!isInCar || isPanelHidden)
+        if (!isInCar || !panel.activeSelf)
         {
             return;
         }
@@ -120,16 +127,19 @@ public class typeHandler : MonoBehaviour
             if (c == '\b')
             {
                 HandleBackspace();
+                UpdateQuantityUI();
                 hasChanged = true;
             }
             else if (c == '\n' || c == '\r')
             {
                 HandleSubmit();
+                UpdateQuantityUI();
                 hasChanged = true;
             }
             else
             {
                 bool typed = TryTypeLetter(c);
+                UpdateQuantityUI();
                 hasChanged |= typed;
             }
         }
@@ -137,6 +147,8 @@ public class typeHandler : MonoBehaviour
         if (hasChanged)
         {
             UpdateInputDisplay();
+            UpdateQuantityUI();
+            inNotice.SetActive(false);
         }
     }
 
@@ -157,6 +169,8 @@ public class typeHandler : MonoBehaviour
         if (quantities[letterIndex] <= 0)
         {
             Debug.Log("insufficient quantity of " + lower);
+            inNotice.SetActive(true);
+            inNoticeText.text = "INSUFFICIENT " + char.ToUpper(lower);
             return false;
         }
 
@@ -193,6 +207,8 @@ public class typeHandler : MonoBehaviour
         if (!string.IsNullOrEmpty(matchedShotType))
         {
             shotType = matchedShotType;
+            GunType currentShotType = (GunType)Enum.Parse(typeof(GunType), shotType);
+            gunHandlerScript.currentGun = currentShotType;
             Debug.Log("Shot type set to " + shotType);
             ClearInputAndShotType();
             return;
@@ -285,6 +301,14 @@ public class typeHandler : MonoBehaviour
                 char letter = letters[i][0];
                 letterIndexMap[letter] = i;
             }
+        }
+    }
+
+    void UpdateQuantityUI()
+    {
+        for (int i = 0; i < quantities.Length; i++)
+        {
+            quantityTexts[i].text = quantities[i].ToString();
         }
     }
 }

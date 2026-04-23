@@ -6,27 +6,35 @@ public class cameraBehavior : MonoBehaviour
     public Transform target;              
     public Transform char1;
 
-    [Header("Position Settings")]
-    public Vector3 offset = new Vector3(0f, 3f, -6f);
+    [Header("Position Settings - Car")]
+    public Vector3 carOffset = new Vector3(0f, 3f, -6f);
     public float followSmoothSpeed = 5f;
+
+    [Header("Position Settings - Third Person")]
+    public Vector3 thirdPersonOffset = new Vector3(2f, 1.5f, -3f);  // Over right shoulder
+    public float thirdPersonSmoothSpeed = 5f;
+    public float thirdPersonMouseSensitivity = 2f;
+    public float thirdPersonDistance = 3f;  // Distance from character
 
     [Header("Lookahead Settings")]
     public float lookaheadAmount = 2f;    
     public float lookaheadSmooth = 5f;    // smoothing speed essentially
     public float maxSteerAngle = 30f;     
 
-    [Header("First Person Settings")]
-    public float mouseSensitivity = 2f;
-    public float maxLookUpAngle = 90f;
-    public float maxLookDownAngle = 90f;
-    public float headHeightOffset = 1.6f;  
+    [Header("Character Settings")]
+    public float characterLookSmoothSpeed = 5f;
+    public Animator characterAnimator;  // Animator component from character
+    public Transform handIKTarget;  // IK target for aiming hand (from Blender rig)
+    public Transform headBone;  // Head bone for FK rotation
+    public float aimDistance = 10f;  // How far ahead to place aiming point
 
     private float currentLookahead = 0f;
-    private float xRotation = 0f;
+    private float thirdPersonCameraY = 0f;  // Vertical angle around character
+    private float thirdPersonCameraX = 0f;  // Horizontal angle around character
+    private Quaternion targetHeadRotation = Quaternion.identity;  // Target rotation for head bone
     public Rigidbody carRigidbody;
     public followTarget followTargetScript;
     public GameObject currentGameObject;
-    public GameObject arms;
     public GameObject character;
 
 
@@ -38,8 +46,19 @@ public class cameraBehavior : MonoBehaviour
         
         if (followTargetScript == null || followTargetScript.target != null)
         {
-        arms.SetActive(false);
+            // Car camera
+            HandleCarCamera();
+        }
+        else if (followTargetScript == null || followTargetScript.target == null)
+        {
+            // Third person over-the-shoulder camera
+            HandleThirdPersonCamera();
+        }
+    }
 
+
+    void HandleCarCamera()
+    {
         // get steering input for lookahead
         float steer = canSwing ? GetSteeringValue() : 0f;
 
@@ -49,9 +68,9 @@ public class cameraBehavior : MonoBehaviour
         // lookahead smoothing
         currentLookahead = Mathf.Lerp(currentLookahead, targetLookahead, Time.deltaTime * lookaheadSmooth);
 
-        // position calculation
+        // position calc
         Vector3 rightOffset = target.right * currentLookahead;
-        Vector3 desiredPosition = target.position + target.TransformDirection(offset) + rightOffset;
+        Vector3 desiredPosition = target.position + target.TransformDirection(carOffset) + rightOffset;
 
         // camera smoothing
         transform.position = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * followSmoothSpeed);
@@ -63,46 +82,51 @@ public class cameraBehavior : MonoBehaviour
                    + Vector3.up * 1.5f;
 
         transform.LookAt(lookTarget);
-        }
-        else if (followTargetScript == null || followTargetScript.target == null)
-        {
-            // switch to first person on dismount
-            Vector3 firstPersonPos = char1.position 
-                                   + Vector3.up * headHeightOffset 
-                                   + character.transform.forward * 0.5f;
-            currentGameObject.transform.position = firstPersonPos;
-            arms.SetActive(true);
-            HandleFirstPersonInput();
-        }
     }
 
-    void HandleFirstPersonInput()
+    void HandleThirdPersonCamera()
     {
+        // Get mouse input
+        float mouseX = Input.GetAxis("Mouse X") * thirdPersonMouseSensitivity;
+        float mouseY = Input.GetAxis("Mouse Y") * thirdPersonMouseSensitivity;
 
-        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
-        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
+        // Update camera rotation angles
+        thirdPersonCameraX += mouseX;
+        thirdPersonCameraY -= mouseY;
+        thirdPersonCameraY = Mathf.Clamp(thirdPersonCameraY, -30f, 60f);  // Limit vertical look
 
-        // rotate around y
-        transform.Rotate(Vector3.up * mouseX);
+        // Calculate rotated camera offset
+        Vector3 baseOffset = new Vector3(2f, 1.5f, -3f);
+        Quaternion cameraRotation = Quaternion.Euler(thirdPersonCameraY, thirdPersonCameraX, 0f);
+        Vector3 rotatedOffset = cameraRotation * baseOffset;
+        
+        // Position camera by orbiting around character - NO smoothing
+        transform.position = char1.position + rotatedOffset;
+        
+        // Camera looks outward/beyond the character
+        transform.rotation = cameraRotation;
 
-        // rotate around x w/ clamping
-        xRotation -= mouseY;
-        xRotation = Mathf.Clamp(xRotation, -maxLookDownAngle, maxLookUpAngle);
-
-        // apply rotation
-        transform.localRotation = Quaternion.Euler(xRotation, transform.localEulerAngles.y, 0f);
-
-        // rotate character to face the same direction as camera
+        // Make character body look towards camera's forward direction
         if (character != null)
         {
-            character.transform.rotation = Quaternion.Euler(0f, transform.eulerAngles.y, 0f);
+            Vector3 cameraForward = transform.forward;
+            Quaternion targetRotation = Quaternion.LookRotation(new Vector3(cameraForward.x, 0f, cameraForward.z).normalized);
+            character.transform.rotation = Quaternion.Lerp(character.transform.rotation, targetRotation, Time.deltaTime * characterLookSmoothSpeed);
         }
+
+      if (handIKTarget != null)
+        {
+            handIKTarget.position = transform.position + transform.forward * aimDistance;
+            handIKTarget.rotation = Quaternion.LookRotation(transform.forward)* Quaternion.Euler(0f, -90f, -90f);;
+        }
+    
     }
 
     float GetSteeringValue()
     {
-        // what do you think this does nigga
+        // what do you think this does
         float input = Input.GetAxisRaw("Horizontal");
         return input;
     }
 }
+    

@@ -12,9 +12,12 @@ public class SimpleRigidbodyCar : MonoBehaviour
     [Range(0f, 1f)]
     public float driftFactor = 0.95f;      // 1 = no drift, lower = more slide
 
+    [Header("Startup")]
+    public bool canMove = false;
+    public bool autoDriveEnabled = false;
+
     public Rigidbody rb;
     public followTarget followTargetScript;
-    public bool canMove = true;
 
     void Start()
     {
@@ -26,9 +29,32 @@ public class SimpleRigidbodyCar : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (followTargetScript == null || followTargetScript.target == null || !canMove) return; // Don't control car if not mounted or movement disabled
+        if (followTargetScript == null || followTargetScript.target == null || !canMove) return; // prevent car control if not mounted or movement disabled
+
+        bool manualInput = HasMovementInput();
+
+        if (autoDriveEnabled && !manualInput)
+        {
+            AutoMoveForward();
+            return;
+        }
+
+        if (manualInput)
+            autoDriveEnabled = false;
+
         Move();
         Turn();
+        ApplyDrift();
+    }
+
+    void AutoMoveForward()
+    {
+        Vector3 forwardForce = transform.forward * acceleration;
+        Vector3 flatVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
+
+        if (flatVelocity.magnitude < maxSpeed)
+            rb.AddForce(forwardForce, ForceMode.Acceleration);
+
         ApplyDrift();
     }
 
@@ -36,17 +62,19 @@ public class SimpleRigidbodyCar : MonoBehaviour
     {
         float vertical = Input.GetAxis("Vertical"); // W/S or Up/Down
         Vector3 forwardForce = transform.forward * vertical * acceleration;
+        Vector3 flatVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
-        // Limit max speed
-        if (rb.velocity.magnitude < maxSpeed)
+        // Limit max speed on horizontal movement only
+        if (flatVelocity.magnitude < maxSpeed)
             rb.AddForce(forwardForce, ForceMode.Acceleration);
     }
 
     void Turn()
     {
         float horizontal = Input.GetAxis("Horizontal"); // A/D or Left/Right
+        Vector3 flatVelocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 
-        if (rb.velocity.magnitude > 0.1f) // only turn if moving
+        if (flatVelocity.magnitude > 0.1f) // only turn if moving horizontally
         {
             float turn = horizontal * turnSpeed * Time.fixedDeltaTime;
             transform.Rotate(0, turn, 0);
@@ -57,7 +85,19 @@ public class SimpleRigidbodyCar : MonoBehaviour
     {
         Vector3 forwardVelocity = transform.forward * Vector3.Dot(rb.velocity, transform.forward);
         Vector3 rightVelocity = transform.right * Vector3.Dot(rb.velocity, transform.right) * driftFactor;
+        Vector3 upVelocity = Vector3.up * Vector3.Dot(rb.velocity, Vector3.up);
 
-        rb.velocity = forwardVelocity + rightVelocity;
+        rb.velocity = forwardVelocity + rightVelocity + upVelocity;
+    }
+
+    bool HasMovementInput()
+    {
+        return Mathf.Abs(Input.GetAxisRaw("Vertical")) > 0.1f || Mathf.Abs(Input.GetAxisRaw("Horizontal")) > 0.1f;
+    }
+
+    public void EnableAutoDrive()
+    {
+        canMove = true;
+        autoDriveEnabled = true;
     }
 }
