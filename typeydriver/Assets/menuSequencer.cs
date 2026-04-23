@@ -6,6 +6,7 @@ public class menuSequencer : MonoBehaviour
     [Header("Menu UI")]
     public GameObject menuUIRoot;
     public CanvasGroup menuCanvasGroup;
+    public GameObject letterTray;
 
 
     [Header("Cameras")]
@@ -91,6 +92,7 @@ public class menuSequencer : MonoBehaviour
             gameplayCamera.enabled = false;
 
         gameplayCameraRoot.SetActive(true);
+        StartCoroutine(showHud());
 
         Vector3 startPosition = menuCamera.transform.position;
         Quaternion startRotation = menuCamera.transform.rotation;
@@ -122,8 +124,9 @@ public class menuSequencer : MonoBehaviour
         }
     }
 
-    // IEnumerator showHud()
-    // {
-    //     //put code for showing carUI here
-    // }
+    IEnumerator showHud()
+    {
+        letterTray.SetActive(true);
+        yield break;
+    }
 }

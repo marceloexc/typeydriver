@@ -15,6 +15,8 @@ public class typeHandler : MonoBehaviour
     public SimpleRigidbodyCar carController;
     public cameraBehavior cameraBehavior;
     public gunHandler gunHandlerScript;
+    public TMP_Text inNoticeText;
+    public GameObject inNotice;
 
     bool isDamaged = false;
     string inputString = string.Empty;
@@ -25,6 +27,7 @@ public class typeHandler : MonoBehaviour
     string[] shotBank = new string[] { "pistol", "scatter", "gatling", "rocket", "beam" };
     string[] letters = new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
     int[] quantities = new int[] { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
+    public TMP_Text[] quantityTexts = new TMP_Text[26];
 
     Dictionary<char, int> letterIndexMap;
 
@@ -33,6 +36,7 @@ public class typeHandler : MonoBehaviour
         InitializeLetterIndexMap();
         UpdateInputDisplay();
         UpdateTargetWordDisplay();
+        UpdateQuantityUI();
     }
 
     void Update()
@@ -123,16 +127,19 @@ public class typeHandler : MonoBehaviour
             if (c == '\b')
             {
                 HandleBackspace();
+                UpdateQuantityUI();
                 hasChanged = true;
             }
             else if (c == '\n' || c == '\r')
             {
                 HandleSubmit();
+                UpdateQuantityUI();
                 hasChanged = true;
             }
             else
             {
                 bool typed = TryTypeLetter(c);
+                UpdateQuantityUI();
                 hasChanged |= typed;
             }
         }
@@ -140,6 +147,8 @@ public class typeHandler : MonoBehaviour
         if (hasChanged)
         {
             UpdateInputDisplay();
+            UpdateQuantityUI();
+            inNotice.SetActive(false);
         }
     }
 
@@ -160,6 +169,8 @@ public class typeHandler : MonoBehaviour
         if (quantities[letterIndex] <= 0)
         {
             Debug.Log("insufficient quantity of " + lower);
+            inNotice.SetActive(true);
+            inNoticeText.text = "INSUFFICIENT " + char.ToUpper(lower);
             return false;
         }
 
@@ -290,6 +301,14 @@ public class typeHandler : MonoBehaviour
                 char letter = letters[i][0];
                 letterIndexMap[letter] = i;
             }
+        }
+    }
+
+    void UpdateQuantityUI()
+    {
+        for (int i = 0; i < quantities.Length; i++)
+        {
+            quantityTexts[i].text = quantities[i].ToString();
         }
     }
 }
