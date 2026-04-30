@@ -3,7 +3,17 @@ guid: 92e07880432ca45389a82bcf447d0489
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: emissiongradtxtr
+    second: {fileID: 2800000, guid: ffde0de51a6724d42b350e39ad771cc4, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: gradtxtr
+    second: {fileID: 2800000, guid: 02f8348c71ebd47718637225cf09eb51, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

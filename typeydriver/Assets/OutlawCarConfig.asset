@@ -16,11 +16,11 @@ MonoBehaviour:
   centerOfMassOffset: {x: 0, y: -0.4, z: 0}
   linearDrag: 0.05
   angularDrag: 2
-  suspensionRestLength: 0.35
+  suspensionRestLength: 0.3
   suspensionMaxLength: 0.5
   wheelRadius: 0.35
   springStrength: 25000
-  damperStrength: 3000
+  damperStrength: 2500
   driveForce: 4000
   maxSpeed: 30
   maxSteerAngle: 32
