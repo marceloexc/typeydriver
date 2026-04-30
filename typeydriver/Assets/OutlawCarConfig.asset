@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ff4901925c454765851ed2b6f9108a5, type: 3}
+  m_Name: OutlawCarConfig
+  m_EditorClassIdentifier: 
+  mass: 1400
+  centerOfMassOffset: {x: 0, y: -0.4, z: 0}
+  linearDrag: 0.05
+  angularDrag: 2
+  suspensionRestLength: 0.35
+  suspensionMaxLength: 0.5
+  wheelRadius: 0.35
+  springStrength: 25000
+  damperStrength: 3000
+  driveForce: 4000
+  maxSpeed: 30
+  maxSteerAngle: 32
+  highSpeedSteerAngle: 12
+  steerFadeSpeed: 25
+  steerResponse: 8
+  lateralGrip: 1500
+  maxGrip: 9000
