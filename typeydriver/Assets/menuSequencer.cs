@@ -35,7 +35,6 @@ public class menuSequencer : MonoBehaviour
             gameplayCameraRoot.SetActive(false);
         }
 
-        // Ensure menu camera is the main camera for UI interaction
         if (menuCamera != null)
             menuCamera.tag = "MainCamera";
     }
