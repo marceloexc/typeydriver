@@ -28,7 +28,7 @@ public class followTarget : MonoBehaviour
         if (active)
         {
         transform.position = target.position;
-        transform.rotation = target.rotation; 
+        transform.rotation = target.rotation;
         }
 
         if (Input.GetKeyDown(KeyCode.Period) && active)
