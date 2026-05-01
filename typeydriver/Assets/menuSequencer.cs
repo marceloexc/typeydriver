@@ -17,7 +17,7 @@ public class menuSequencer : MonoBehaviour
     public float fadeDuration = 1f;
     public float cameraMoveDuration = 1f;
 
-    public SimpleRigidbodyCar carController;
+    public CarControllerV2 carController;
     private bool isStarting;
     private Camera gameplayCamera;
 
