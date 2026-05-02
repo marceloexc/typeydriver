@@ -18,6 +18,15 @@ public class typeHandler : MonoBehaviour
     public TMP_Text inNoticeText;
     public GameObject inNotice;
 
+
+    //instantiate for letter drop updationating.
+    public static typeHandler Instance;
+
+        void Awake()
+    {
+        Instance = this;
+    }
+
     bool isDamaged = false;
     string inputString = string.Empty;
     string targetWord = string.Empty;
@@ -309,6 +318,16 @@ public class typeHandler : MonoBehaviour
         for (int i = 0; i < quantities.Length; i++)
         {
             quantityTexts[i].text = quantities[i].ToString();
+        }
+    }
+
+    public void AddLetter(char letter)
+    {
+        letter = char.ToLower(letter);
+        if (letterIndexMap.TryGetValue(letter, out int index))
+        {
+            quantities[index]++;
+            UpdateQuantityUI();
         }
     }
 }

@@ -126,6 +126,25 @@ public class menuSequencer : MonoBehaviour
     IEnumerator showHud()
     {
         letterTray.SetActive(true);
+            TooltipManager.Instance.ShowTooltip(
+            "driving_intro",
+            "Drive, outlaw!",
+            "Use the WASD keys to control your car.",
+            5f
+            );
+            StartCoroutine(WaitForTip(6f, "driving_intro2", "Don't crash.", "Avoid running into obstacles, else you may need to repair your ride!", 5f));
+ 
         yield break;
+    }
+
+        IEnumerator WaitForTip(float time, string tag, string head, string body, float fadeWait)
+    {
+        yield return new WaitForSeconds(time);
+            TooltipManager.Instance.ShowTooltip(
+            tag,
+            head,
+            body,
+            fadeWait
+            );
     }
 }

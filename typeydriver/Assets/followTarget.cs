@@ -37,12 +37,24 @@ public class followTarget : MonoBehaviour
             Debug.Log("dismount");
             tpsUI.SetActive(true);
             repairSystem.SetActive(false);
+            TooltipManager.Instance.ShowTooltip(
+            "exit_car",
+            "Obtaining Letters",
+            "Use RMB to blast bots, who'll drop the letter on their screen.",
+            5f
+            );
         }
         else if (Input.GetKeyDown(KeyCode.Period) && !active)
         {
             target = temptarget;
             Debug.Log("giddyup");
             tpsUI.SetActive(false);
+            TooltipManager.Instance.ShowTooltip(
+            "reenter_car",
+            "Using Letters",
+            "Open the fixme system using R, then type in the name of the damaged part.",
+            5f
+            );
         }
     }
 

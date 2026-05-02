@@ -9,6 +9,8 @@ public class enemyController : MonoBehaviour
     public Animator anim;
     [SerializeField] public TextMeshPro textMesh;
 
+    public char currentLetter; 
+
     public bool attacking = false;
     public bool chasing = false;
 
@@ -17,7 +19,7 @@ public class enemyController : MonoBehaviour
     public float attackRange = 1f;
     public float rotationSpeed = 5f; // controls how fast enemy turns
 
-    private static readonly char[] letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".ToCharArray();
+    private static readonly char[] letters = "ABCDEFGHIKLMNOPRSTUW".ToCharArray(); //removed J, Q, V, X, Y, and Z since they don't currently appear in any typed words.
 
     void Start()
     {
@@ -78,6 +80,7 @@ public class enemyController : MonoBehaviour
         void AssignRandomLetter()
     {
         int index = Random.Range(0, letters.Length);
-        textMesh.text = letters[index].ToString();
+        currentLetter = letters[index];
+        textMesh.text = currentLetter.ToString();
     }
 }
