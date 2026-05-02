@@ -15,6 +15,7 @@ public class healthHandler : MonoBehaviour
     void Start()
     {
         parentObj = transform.parent != null ? transform.parent.gameObject : gameObject;
+
     }
 
     void Update()
@@ -22,14 +23,17 @@ public class healthHandler : MonoBehaviour
         if (!isDead && hitPoints <= 0)
         {
             isDead = true;
-            SpawnLetterDrop();
+            Transform screenLetter = parentObj.transform.Find("Armature/Bone/Cube.001/Text (TMP)");
+            GameObject screenLetterObj = screenLetter.gameObject;
+            Destroy(screenLetterObj);
             TooltipManager.Instance.ShowTooltip(
             "enemy_death",
             "you killed him",
             "dude what the hell",
             5f
             );
-            Destroy(parentObj, 0.01f);
+            Destroy(parentObj, 0.5f);
+            SpawnLetterDrop();
         }
     }
 
