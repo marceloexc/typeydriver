@@ -55,10 +55,17 @@ public class typeHandler : MonoBehaviour
 
         // handle panel hide toggle
         if (isInCar){
-            if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMinus))
+            if (Input.GetKeyDown(KeyCode.Tab))
             {
                 Debug.Log("togle");
                 panel.SetActive(!panel.activeSelf);
+                TooltipManager.Instance.ShowTooltip(
+                "enemy_death",
+                "Using Letters",
+                "Type using collected letters to repair your car and change ammo type.",
+                5f
+                );
+                StartCoroutine(WaitForTip(6f, "ammo_types", "Ammo Types", "If you have spare letters, try typing: scatter, rocket, gatling, or beam.", 10f, false));
             }
         }
 
@@ -329,5 +336,17 @@ public class typeHandler : MonoBehaviour
             quantities[index]++;
             UpdateQuantityUI();
         }
+    }
+
+            IEnumerator WaitForTip(float time, string tag, string head, string body, float fadeWait, bool inputWait)
+    {
+        yield return new WaitForSeconds(time);
+            TooltipManager.Instance.ShowTooltip(
+            tag,
+            head,
+            body,
+            fadeWait,
+            inputWait
+            );
     }
 }

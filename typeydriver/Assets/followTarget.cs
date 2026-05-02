@@ -8,6 +8,7 @@ public class followTarget : MonoBehaviour
     private Transform temptarget;
     public GameObject tpsUI;
     public GameObject repairSystem;
+    public GameObject player;
 
     void Start()
     {
@@ -27,8 +28,8 @@ public class followTarget : MonoBehaviour
 
         if (active)
         {
-        transform.position = target.position;
-        transform.rotation = target.rotation;
+        player.transform.position = target.position;
+        player.transform.rotation = target.rotation;
         }
 
         if (Input.GetKeyDown(KeyCode.Period) && active)
@@ -37,6 +38,7 @@ public class followTarget : MonoBehaviour
             Debug.Log("dismount");
             tpsUI.SetActive(true);
             repairSystem.SetActive(false);
+            player.SetActive(true);
             TooltipManager.Instance.ShowTooltip(
             "exit_car",
             "Obtaining Letters",
@@ -49,10 +51,11 @@ public class followTarget : MonoBehaviour
             target = temptarget;
             Debug.Log("giddyup");
             tpsUI.SetActive(false);
+            player.SetActive(false);
             TooltipManager.Instance.ShowTooltip(
             "reenter_car",
             "Using Letters",
-            "Open the fixme system using R, then type in the name of the damaged part.",
+            "Open the fixme system using TAB, then type in the name of the damaged part.",
             5f
             );
         }
