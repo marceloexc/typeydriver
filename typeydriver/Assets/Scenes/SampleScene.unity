@@ -10986,6 +10986,33 @@ MonoBehaviour:
   gunHandlerScript: {fileID: 1843619205}
   inNoticeText: {fileID: 329343437}
   inNotice: {fileID: 329343435}
+  letterTexts:
+  - {fileID: 1581940669}
+  - {fileID: 88374712}
+  - {fileID: 497167133}
+  - {fileID: 672210467}
+  - {fileID: 1982125144}
+  - {fileID: 1286781602}
+  - {fileID: 139252377}
+  - {fileID: 1509102130}
+  - {fileID: 1798024355}
+  - {fileID: 458466610}
+  - {fileID: 760163256}
+  - {fileID: 403480579}
+  - {fileID: 10902463}
+  - {fileID: 1962732884}
+  - {fileID: 845227961}
+  - {fileID: 673252275}
+  - {fileID: 1233033005}
+  - {fileID: 176639026}
+  - {fileID: 632008332}
+  - {fileID: 2126381545}
+  - {fileID: 1406247554}
+  - {fileID: 1636509395}
+  - {fileID: 1355806509}
+  - {fileID: 646389958}
+  - {fileID: 354409754}
+  - {fileID: 11854522}
   quantityTexts:
   - {fileID: 901465364}
   - {fileID: 1961033421}

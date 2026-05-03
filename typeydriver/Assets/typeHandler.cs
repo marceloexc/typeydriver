@@ -36,7 +36,11 @@ public class typeHandler : MonoBehaviour
     string[] shotBank = new string[] { "pistol", "scatter", "gatling", "rocket", "beam" };
     string[] letters = new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
     int[] quantities = new int[] { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
+    public TMP_Text[] letterTexts = new TMP_Text[26];
     public TMP_Text[] quantityTexts = new TMP_Text[26];
+    const int maxQuantity = 5;
+    const float letterOutlineWidth = 0.2f;
+    const float letterOutlineMaxAlpha = 0.5f;
 
     Dictionary<char, int> letterIndexMap;
 
@@ -324,7 +328,24 @@ public class typeHandler : MonoBehaviour
     {
         for (int i = 0; i < quantities.Length; i++)
         {
-            quantityTexts[i].text = quantities[i].ToString();
+            float ratio = Mathf.Clamp01((float)quantities[i] / maxQuantity);
+
+            if (letterTexts[i] != null)
+            {
+                Color c = letterTexts[i].color;
+                c.a = ratio;
+                letterTexts[i].color = c;
+
+                Material mat = letterTexts[i].fontMaterial;
+                float outlineAlpha = (1f - ratio) * letterOutlineMaxAlpha;
+                mat.SetColor(ShaderUtilities.ID_OutlineColor, new Color(1f, 1f, 1f, outlineAlpha));
+                mat.SetFloat(ShaderUtilities.ID_OutlineWidth, letterOutlineWidth);
+            }
+
+            if (quantityTexts[i] != null)
+            {
+                quantityTexts[i].text = quantities[i].ToString();
+            }
         }
     }
 
