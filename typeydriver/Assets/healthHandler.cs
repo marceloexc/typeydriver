@@ -11,6 +11,7 @@ public class healthHandler : MonoBehaviour
     private bool isDead = false;
 
     public GameObject letterDropPrefab;
+    public EnemySpawner spawner;
 
     void Start()
     {
@@ -28,12 +29,13 @@ public class healthHandler : MonoBehaviour
             Destroy(screenLetterObj);
             TooltipManager.Instance.ShowTooltip(
             "enemy_death",
-            "you killed him",
-            "dude what the hell",
+            "Collecting Letters",
+            "Collect dropped letters by touching them.",
             5f
             );
             Destroy(parentObj, 0.5f);
             SpawnLetterDrop();
+            SpawnAnother();
         }
     }
 
@@ -41,11 +43,19 @@ public class healthHandler : MonoBehaviour
     {
         enemyController enemy = parentObj.GetComponent<enemyController>();
         if (enemy == null || letterDropPrefab == null) return;
-        GameObject drop = Instantiate(letterDropPrefab, parentObj.transform.position, Quaternion.identity);
+        GameObject drop = Instantiate(letterDropPrefab, parentObj.transform.position + new Vector3(0f, 2f, 0f), Quaternion.identity);
         letterDropHandler dropHandler = drop.GetComponent<letterDropHandler>();
         if (dropHandler != null)
         {
             dropHandler.SetLetter(enemy.currentLetter);
+        }
+    }
+
+    void SpawnAnother()
+    {
+        if (spawner != null)
+        {
+            spawner.OnEnemyKilled();
         }
     }
 }
