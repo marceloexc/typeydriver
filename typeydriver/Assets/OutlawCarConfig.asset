@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ff4901925c454765851ed2b6f9108a5, type: 3}
   m_Name: OutlawCarConfig
   m_EditorClassIdentifier: 
-  mass: 1400
-  centerOfMassOffset: {x: 0, y: -0.4, z: 0}
+  mass: 800
+  centerOfMassOffset: {x: 0, y: 0, z: 0}
   linearDrag: 0.05
-  angularDrag: 2
+  angularDrag: 0.3
   suspensionRestLength: 0.3
   suspensionMaxLength: 0.5
   wheelRadius: 0.35
@@ -27,5 +27,5 @@ MonoBehaviour:
   highSpeedSteerAngle: 12
   steerFadeSpeed: 25
   steerResponse: 8
-  lateralGrip: 1500
-  maxGrip: 9000
+  lateralGrip: 5000
+  maxGrip: 15000

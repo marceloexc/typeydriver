@@ -20387,10 +20387,10 @@ MonoBehaviour:
   rb: {fileID: 2090126000}
   config: {fileID: 11400000, guid: a24cf32e3cb4e4893ab4ae20917feeec, type: 2}
   wheels:
-  - name: 
+  - name:
     hardpoint: {fileID: 549966439}
     visualWheel: {fileID: 0}
-    steer: 1
+    steer: 0
     drive: 1
     grounded: 0
     currentSuspensionLength: 0
@@ -20417,10 +20417,10 @@ MonoBehaviour:
     previousSuspensionLength: 0
     steerAngle: 0
     wheelAngularSpeed: 0
-  - name: 
+  - name:
     hardpoint: {fileID: 2011650119}
     visualWheel: {fileID: 0}
-    steer: 0
+    steer: 1
     drive: 1
     grounded: 0
     currentSuspensionLength: 0
