@@ -196,7 +196,6 @@ void IsGrounded()
     isGrounded = false;
     foreach (Collider col in hitColliders)
     {
-        // Make sure we're not detecting the character's own collider
         if (col != characterCollider)
         {
             isGrounded = true;
