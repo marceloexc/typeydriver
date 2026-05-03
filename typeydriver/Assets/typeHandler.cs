@@ -106,8 +106,11 @@ public class typeHandler : MonoBehaviour
         if (isInCar){
             if (Input.GetKeyDown(KeyCode.Tab))
             {
+
                 Debug.Log("togle");
                 panel.SetActive(!panel.activeSelf);
+                                InputLock.IsTyping = panel.activeSelf;
+
                 TooltipManager.Instance.ShowTooltip(
                 "enemy_death",
                 "Using Letters",
