@@ -378,9 +378,9 @@ public class typeHandler : MonoBehaviour
 
             if (letterTexts[i] != null)
             {
-                Color c = letterTexts[i].color;
-                c.a = ratio;
-                letterTexts[i].color = c;
+                letterTexts[i].color = quantities[i] <= 0
+                    ? new Color(1f, 0f, 0f, 0.1f)
+                    : new Color(1f, 1f, 1f, ratio);
 
                 Material mat = letterTexts[i].fontMaterial;
                 mat.EnableKeyword("OUTLINE_ON");
