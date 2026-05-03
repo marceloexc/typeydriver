@@ -36,9 +36,19 @@ public class typeHandler : MonoBehaviour
     string[] shotBank = new string[] { "pistol", "scatter", "gatling", "rocket", "beam" };
     string[] letters = new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
     int[] quantities = new int[] { 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5 };
+    public TMP_Text[] letterTexts = new TMP_Text[26];
     public TMP_Text[] quantityTexts = new TMP_Text[26];
+    const int maxQuantity = 5;
+    const float letterOutlineWidth = 0.2f;
+    const float letterOutlineMaxAlpha = 0.5f;
+    const float shakeDuration = 0.25f;
+    const float shakeAmplitude = 4f;
+    const float shakeFrequency = 30f;
 
     Dictionary<char, int> letterIndexMap;
+    RectTransform[] letterRects;
+    Vector2[] letterRestPositions;
+    Coroutine[] shakeCoroutines;
 
     void Start()
     {
@@ -46,6 +56,45 @@ public class typeHandler : MonoBehaviour
         UpdateInputDisplay();
         UpdateTargetWordDisplay();
         UpdateQuantityUI();
+        CacheLetterShakeState();
+    }
+
+    void CacheLetterShakeState()
+    {
+        letterRects = new RectTransform[letterTexts.Length];
+        letterRestPositions = new Vector2[letterTexts.Length];
+        shakeCoroutines = new Coroutine[letterTexts.Length];
+        for (int i = 0; i < letterTexts.Length; i++)
+        {
+            if (letterTexts[i] == null) continue;
+            letterRects[i] = letterTexts[i].rectTransform;
+            letterRestPositions[i] = letterRects[i].anchoredPosition;
+        }
+    }
+
+    void ShakeLetter(int index)
+    {
+        if (letterRects == null || index < 0 || index >= letterRects.Length) return;
+        if (letterRects[index] == null) return;
+        if (shakeCoroutines[index] != null) StopCoroutine(shakeCoroutines[index]);
+        shakeCoroutines[index] = StartCoroutine(ShakeRoutine(index));
+    }
+
+    IEnumerator ShakeRoutine(int index)
+    {
+        RectTransform rt = letterRects[index];
+        Vector2 origin = letterRestPositions[index];
+        float elapsed = 0f;
+        while (elapsed < shakeDuration)
+        {
+            elapsed += Time.deltaTime;
+            float damp = 1f - (elapsed / shakeDuration);
+            float offset = Mathf.Sin(elapsed * shakeFrequency * 2f * Mathf.PI) * shakeAmplitude * damp;
+            rt.anchoredPosition = origin + new Vector2(offset, 0f);
+            yield return null;
+        }
+        rt.anchoredPosition = origin;
+        shakeCoroutines[index] = null;
     }
 
     void Update()
@@ -192,6 +241,7 @@ public class typeHandler : MonoBehaviour
 
         inputString += lower;
         quantities[letterIndex]--;
+        ShakeLetter(letterIndex);
         return true;
     }
 
@@ -324,7 +374,26 @@ public class typeHandler : MonoBehaviour
     {
         for (int i = 0; i < quantities.Length; i++)
         {
-            quantityTexts[i].text = quantities[i].ToString();
+            float ratio = Mathf.Clamp01((float)quantities[i] / maxQuantity);
+
+            if (letterTexts[i] != null)
+            {
+                letterTexts[i].color = quantities[i] <= 0
+                    ? new Color(1f, 0f, 0f, 0.1f)
+                    : new Color(1f, 1f, 1f, ratio);
+
+                Material mat = letterTexts[i].fontMaterial;
+                mat.EnableKeyword("OUTLINE_ON");
+                float outlineAlpha = (1f - ratio) * letterOutlineMaxAlpha;
+                mat.SetColor(ShaderUtilities.ID_OutlineColor, new Color(1f, 1f, 1f, outlineAlpha));
+                mat.SetFloat(ShaderUtilities.ID_OutlineWidth, letterOutlineWidth);
+                letterTexts[i].UpdateMeshPadding();
+            }
+
+            if (quantityTexts[i] != null)
+            {
+                quantityTexts[i].text = quantities[i].ToString();
+            }
         }
     }
 
