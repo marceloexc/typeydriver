@@ -191,11 +191,12 @@ void IsGrounded()
 {
     // Use OverlapSphere slightly below the character to detect ground
     Vector3 checkPosition = rb.transform.position + Vector3.down * (groundCheckDistance + 0.1f);
-    Collider[] hitColliders = Physics.OverlapSphere(checkPosition, 0.1f);
+    Collider[] hitColliders = Physics.OverlapSphere(checkPosition, 0.5f);
     
     isGrounded = false;
     foreach (Collider col in hitColliders)
     {
+        Debug.Log("collided with:" + col);
         if (col != characterCollider)
         {
             isGrounded = true;
