@@ -29,4 +29,14 @@ public class CarConfig : ScriptableObject
     [Header("Grip (Phase 1: simple lateral clamp)")]
     public float lateralGrip = 1500f;
     public float maxGrip = 9000f;
+
+    [Header("Steering Feel (drives the values above)")]
+    [Range(0f, 1f)] public float steeringFeel = 0.5f;
+
+    private void OnValidate()
+    {
+        steerResponse = Mathf.Lerp(2f, 15f, steeringFeel);
+        lateralGrip = Mathf.Lerp(1500f, 8000f, steeringFeel);
+        maxSteerAngle = Mathf.Lerp(20f, 40f, steeringFeel);
+    }
 }
