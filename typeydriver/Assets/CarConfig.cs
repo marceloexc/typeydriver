@@ -33,10 +33,16 @@ public class CarConfig : ScriptableObject
     [Header("Steering Feel (drives the values above)")]
     [Range(0f, 1f)] public float steeringFeel = 0.5f;
 
+    [Header("Power Feel (drives driveForce + maxSpeed)")]
+    [Range(0f, 1f)] public float powerFeel = 0.5f;
+
     private void OnValidate()
     {
         steerResponse = Mathf.Lerp(2f, 15f, steeringFeel);
         lateralGrip = Mathf.Lerp(1500f, 8000f, steeringFeel);
         maxSteerAngle = Mathf.Lerp(20f, 40f, steeringFeel);
+
+        driveForce = Mathf.Lerp(1500f, 8000f, powerFeel);
+        maxSpeed = Mathf.Lerp(15f, 60f, powerFeel);
     }
 }
